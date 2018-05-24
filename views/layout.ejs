@@ -36,19 +36,52 @@
     
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+    <script src="/js/renderjson.js"></script>
     <script>
     io.socket.get('/subscribe', function(data, jwr) {
       io.socket.on('new_entry', function(entry) {
         var table = $('#errorsTableBody');
-        var row = $('<tr class="new-row"><td>' + entry.message + '</td>' + '<td>' + entry.scriptUrl + '</td>' + '<td>' + entry.lineNumber + '</td>' + '<td>' + entry.columnNumber + '</td>' + '<td>' + entry.timestamp + '</td></tr>');
+        var row = $(
+          '<tr class="new-row"><td>' + 
+          entry.message + '</td>' + '<td>' + 
+          entry.scriptUrl + '</td>' + '<td>' + 
+          entry.lineNumber + '</td>' + '<td>' + 
+          entry.columnNumber + '</td>' + '<td>' + 
+          entry.timestamp + '</td>' + '<td>' + 
+          '<button class="btn btn-info" data-toggle="modal" data-target="#logDetailsModal" data-id="' + entry.id + '" onClick="LogDetailsModule.showLogDetails(this)"><i class="fa fa-info-circle"></i></button></td></tr>');
         table.prepend(row);
       });
     });
+
+    var LogDetailsModule = (function(){
+
+      var logDetailsModalBody = $('#logDetailsModalBody');
+
+      var showLogDetails = function(element) {
+        logDetailsModalBody.html('');
+
+        var $element = $(element);
+
+        $.ajax( "/api/log/" + $element.data('id') )
+        .done(function(result) {
+          logDetailsModalBody.append(renderjson.set_show_to_level(2)(result))
+        })
+        .fail(function() {
+          console.log( "error" );
+        })
+      };
+
+      return({
+        showLogDetails: showLogDetails
+      })
+
+    })();
+
   </script>
 
 </body>
