@@ -1,7 +1,7 @@
 
 <h1 class="text-center">Logy</h1>
 
-<div class="row">
+<div class="row pt-4">
   <table id="errorsTable" class="table">
     <thead>
       <tr>
@@ -21,7 +21,7 @@
         <td><%= item.columnNumber %></td>
         <td><%= item.timestamp %></td>
         <td>
-          <button type="button" class="btn btn-info" data-toggle="modal" data-target="#logDetailsModal" data-id="<%= item.id %>" onClick="LogDetailsModule.showLogDetails(this)">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#logDetailsModal" data-id="<%= item.id %>" onClick="LogDetailsModule.showLogDetails(this)">
             <i class="fa fa-info-circle"></i>
           </button>
         </td>
